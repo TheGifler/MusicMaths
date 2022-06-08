@@ -1,0 +1,209 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+
+<style>
+    #mathsGameFrame{
+        text-align: center;
+        align-content: center;
+    }
+     #gameOverFrame{
+         align-content:center;
+         display: none;
+     }
+
+    
+</style>
+
+<body>
+
+
+
+    <div id = "mathsGameFrame">
+        <button id ="startGameButton" onclick = "startGame()">Start Game</button>
+        <div id = "gameSums" style = "visibility:hidden;">
+
+        
+        <p id = "mathsNum1"></p>
+        <span id = "chosenHtmlOperator"></span>
+        <span id = "mathsNum2"></span>
+        <p id = "mathsLine">___________________</p>
+        <p id = "mathsNumAnswer"></p>
+        <p id = "mathsNumAnswerFeedback"></p>
+        <p><input id = "userAnswerInput" style = "visibility:hidden;"></p>
+        <p><button id = "submitAnswerButton" style = "visibility: hidden;" onclick = "submitUserAnswer()">Submit Answer</button></p>
+        <p><button id = "seeAnswerButton" onclick = "showAnswer()" style = "display:none;">Reveal the Answer!</button></></p>
+        <p><button id = "nextQuestionButton" onclick = "nextQuestion()" style = "display:inline-block;">Next Question</button></></p>
+        <!--<p><button id = "clearFields" onclick = "clearInput()" style = "visibility:visible;">Clear Fields</button></></p>-->
+        <p id = "gameLives"></p>
+        <p id = "showGameScore"></p>
+         <p><button id = "testButton" onclick = "testFunction()" style = "visibility:visible;">Testing Button</button></></p>
+
+
+
+
+
+
+        </div>
+
+        
+
+        </div>
+        <div id = "gameOverFrame">
+            <h1>Game Over!</h1>
+            <button id = "restartGameButton" onclick = "restartGame()">Restart Game?</button>
+    </div>
+</body>
+
+<script>
+
+    let gameLivesNum = 3;
+    var currentMathsAnswer = 0;
+    let gameScore = 0;
+    var chosenOperator = "+";
+    let hintRequirements = 1;
+    var operators = { 
+
+        
+
+    '+': function(a, b) { 
+
+        return a + b; 
+
+    }, 
+
+    '*': function(a, b) { 
+
+        return a * b; 
+
+    }, 
+
+  } 
+  const updateLives = () =>{
+      gameLives.innerHTML = "Lives left: " + gameLivesNum;
+  }
+  const testFunction = () =>{
+      alert(gameScore + " / " + gameScore % 2 + " / " + gameLivesNum);
+      gameLivesNum++;
+  }
+
+  const restartGame = () =>{
+      mathsGameFrame.style.display = `block`;
+      gameOverFrame.style.display = `none`;
+      gameLivesNum = 3;
+      gameScore = 0;
+      startGame();
+  }
+  
+
+    const startGame = () =>{
+        gameSums.style.visibility = `visible`;
+        startGameButton.style.visibility = `hidden`;
+        submitAnswerButton.style.visibility = `visible`;
+        userAnswerInput.style.visibility = `visible`;
+        mathsQuestionRandomGen()
+        mathsNumAnswerFeedback.innerHTML = "";
+        updateLives();
+        const userGameScore = () =>{
+            showGameScore.innerHTML = "Your current score: " + gameScore;
+        }
+        userGameScore();
+        
+        alert("Game Start");
+    }
+
+    const clearInput = () => {
+        userAnswerInput.value = "";
+        
+
+    }
+
+    const updateUserGameScore = () =>{
+        
+        
+        if (gameScore % 10 ){
+               return gameLivesNum++;
+            }
+        showGameScore.innerHTML = "Your current score: " + gameScore;
+    }
+
+    const submitUserAnswer = () =>{
+        var userMathsQuestionAnswer = document.getElementById("userAnswerInput").value;
+        if (userMathsQuestionAnswer == currentMathsAnswer){
+            
+            seeAnswerButton.style.display = `none`;
+            submitAnswerButton.style.visibility = `hidden`;
+            nextQuestionButton.style.display = `inline-block`;
+            userAnswerInput.style.visibility = `hidden`;
+            mathsNumAnswer.innerHTML = "" + currentMathsAnswer;
+            mathsNumAnswerFeedback.innerHTML = "Correct!";
+            clearInput();
+            gameScore++;
+            updateLives();
+            updateUserGameScore();
+            
+           
+
+        }else{
+            
+            mathsNumAnswerFeedback.innerHTML = "Incorrect!";
+            gameLivesNum--;
+            updateLives();
+            seeAnswerButton.style.display = `inline-block`;
+            if (gameLivesNum == 0){
+                gameOver();
+
+            }
+        }
+    }
+
+    const nextQuestion = () =>{
+        mathsNumAnswer.innerHTML = "";
+        mathsNumAnswerFeedback.innerHTML = "";
+        //mathsNumAnswer.style.visibility = `hidden`;
+        //mathsNumAnswerFeedback.style.visibility = `hidden`;
+        submitAnswerButton.style.visibility = `visible`;
+        userAnswerInput.style.visibility = `visible`;
+        nextQuestionButton.style.display = `none`;
+        mathsQuestionRandomGen();
+    }
+    const gameOver = () =>{
+        mathsGameFrame.style.display = `none`;
+        gameOverFrame.style.display = `block`;
+    
+    }
+
+
+    const mathsQuestionRandomGen = () =>{
+        var randomNumber1 = Math.floor(Math.random()*10) + 1;
+        var randomNumber2 = Math.floor(Math.random()*10) + 1;
+       // var randomNumber1 = Math.floor(Math.random()*10) + 1;
+       mathsNum1.innerHTML = "" + randomNumber1;
+       mathsNum2.innerHTML = "" + randomNumber2;
+       chosenHtmlOperator.innerHTML = "" + chosenOperator;
+       var mathsQuestionRandomGen = operators[chosenOperator](randomNumber1,randomNumber2);
+       return currentMathsAnswer = mathsQuestionRandomGen;
+    }
+
+    const showAnswer = () =>{
+       if (gameScore >= hintRequirements){
+           alert(currentMathsAnswer);
+           userAnswerInput.value = currentMathsAnswer;
+           return hintRequirements = hintRequirements * 2;
+       }else{
+           alert("You do not have enough points to reveal the answer. You need: " + hintRequirements + " point/s!")
+       }
+        
+        
+    }
+</script>
+
+</body>
+</html>

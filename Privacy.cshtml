@@ -1,0 +1,132 @@
+﻿@page
+@model PrivacyModel
+@{
+    ViewData["Title"] = "Privacy Policy";
+}
+<h1>@ViewData["Title"]</h1>
+
+<p>Use this page to detail your site's privacy policy.</p>
+
+<style>
+    #mathsGameFrame{
+        text-align: center;
+        align-content: center;
+    }
+
+    
+</style>
+
+<body>
+
+
+
+    <div id = "mathsGameFrame">
+        <button id ="startGameButton" onclick = "startGame()">Start Game</button>
+        <div id = "gameSums" style = "visibility:hidden;">
+
+        
+        <p id = "mathsNum1"></p>
+        <span id = "chosenHtmlOperator"></span>
+        <span id = "mathsNum2"></span>
+        <p id = "mathsLine">___________________</p>
+        <p id = "mathsNumAnswer"></p>
+        <p id = "mathsNumAnswerFeedback"></p>
+        <p><input id = "userAnswerInput" style = "visibility:hidden;"></p>
+        <p><button id = "submitAnswerButton" style = "visibility: hidden;" onclick = "submitUserAnswer()">Submit Answer</button></p>
+        <p><button id = "seeAnswerButton" onclick = "showAnswer()">Reveal the Answer!</button></></p>
+        <p><button id = "nextQuestionButton" onclick = "mathsQuestionRandomGen()" style = "visibility:hidden;">Next Question</button></></p>
+        <button id = "clearFields" onclick = "clearInput()" style = "visibility:visible;">Clear Fields</button></></p>
+        <p id = "gameLives"></p>
+
+
+
+
+
+
+        </div>
+    </div>
+</body>
+
+<script>
+
+    let gameLivesNum = 3;
+    var currentMathsAnswer = 0;
+    var chosenOperator = "+";
+    var operators = { 
+
+        
+
+    '+': function(a, b) { 
+
+        return a + b; 
+
+    }, 
+
+    '*': function(a, b) { 
+
+        return a * b; 
+
+    }, 
+
+  } 
+  const updateLives = () =>{
+      gameLives.innerHTML = "Lives left: " + gameLivesNum;
+  }
+
+  
+
+    const startGame = () =>{
+        gameSums.style.visibility = `visible`;
+        startGameButton.style.visibility = `hidden`;
+        submitAnswerButton.style.visibility = `visible`;
+        userAnswerInput.style.visibility = `visible`;
+        mathsQuestionRandomGen()
+        updateLives();
+        
+        alert("Game Start");
+    }
+
+    const clearInput = () => {
+        userAnswerInput.value = "";
+        
+
+    }
+
+    const submitUserAnswer = () =>{
+        var userMathsQuestionAnswer = document.getElementById("userAnswerInput").value;
+        if (userMathsQuestionAnswer == currentMathsAnswer){
+            
+            seeAnswerButton.style.visibility = `hidden`;
+            submitAnswerButton.style.visibility = `hidden`;
+            nextQuestionButton.style.visibility = `visible`;
+            userAnswerInput.style.visibility = `hidden`;
+            mathsNumAnswer.innerHTML = "" + currentMathsAnswer;
+            mathsNumAnswerFeedback.innerHTML = "Correct!";
+            clearInput();
+
+        }else{
+            
+            mathsNumAnswerFeedback.innerHTML = "Incorrect!";
+            gameLivesNum--;
+            updateLives();
+        }
+    }
+
+
+    const mathsQuestionRandomGen = () =>{
+        var randomNumber1 = Math.floor(Math.random()*10) + 1;
+        var randomNumber2 = Math.floor(Math.random()*10) + 1;
+       // var randomNumber1 = Math.floor(Math.random()*10) + 1;
+       mathsNum1.innerHTML = "" + randomNumber1;
+       mathsNum2.innerHTML = "" + randomNumber2;
+       chosenHtmlOperator.innerHTML = "" + chosenOperator;
+       var mathsQuestionRandomGen = operators[chosenOperator](randomNumber1,randomNumber2);
+       return currentMathsAnswer = mathsQuestionRandomGen;
+    }
+
+    const showAnswer = () =>{
+        
+        alert(currentMathsAnswer);
+        
+    }
+</script>
